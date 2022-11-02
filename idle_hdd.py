@@ -1,8 +1,6 @@
-#!/usr/bin/python3
-
 """
-Objetivo: Detectar y suspender discos duros (hard disk drive) desmontados.
-Diseñado para linux (Ubuntu 20.10).
+Objective of project: Detect and suspend unmounted hard disk drive.
+Designed for Linux (Ubuntu 20.10).
 
 =================================================
 Dependences (testing in):
@@ -23,7 +21,7 @@ import time
 
 def lsblk_table() -> list:
     """
-    Detecta y retorna todos los /dev/sdx e información adicional:
+    Detect and return all /dev/sdx devices and param information:
     name: str, type: disk | part, mountpoint: str,
     model: str, rota: True | False
     """
@@ -42,7 +40,7 @@ def lsblk_table() -> list:
 
 
 def check_disk_on(name: str) -> bool:
-    """Comprueba si el disco está encendido."""
+    """Check if the disk is active."""
 
     process_hdparm = subprocess.run(
         ["hdparm", "-C", name],
@@ -61,7 +59,7 @@ def check_disk_on(name: str) -> bool:
 
 
 def hdd_devices() -> list:
-    """Crea la tabla de discos duros."""
+    """Create table of hard disk drive."""
 
     hdd_devices_table = []
     for device in lsblk_table():
@@ -105,4 +103,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
