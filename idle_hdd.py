@@ -15,8 +15,17 @@ __date__ = "2022-11-01"
 
 
 import subprocess
+import sys
 import json
 import time
+
+
+def error_exit(stderr: str):
+    """Print stderr and call SystemExit if stderr is not void string."""
+
+    if stderr != "":
+        print(stderr)
+        sys.exit()
 
 
 def lsblk_table() -> list:
@@ -30,6 +39,8 @@ def lsblk_table() -> list:
         capture_output=True,
         text=True
     )
+
+    error_exit(process_lsblk.stderr)
 
     devices = json.loads(process_lsblk.stdout)["blockdevices"]
     for block in devices.copy():
@@ -48,14 +59,13 @@ def check_disk_on(name: str) -> bool:
         text=True,
     )
 
+    error_exit(process_hdparm.stderr)
+
     if "active" in process_hdparm.stdout:
         return True
 
     elif "standby" in process_hdparm.stdout:
         return False
-
-    elif process_hdparm.stderr != "":
-        raise RuntimeError(process_hdparm.stderr)
 
 
 def hdd_devices() -> list:
@@ -67,7 +77,11 @@ def hdd_devices() -> list:
             hdd_devices_table.append(device)
 
     for disk in hdd_devices_table:
-        disk["is_active"] = check_disk_on(disk["name"])
+        try:
+            disk["is_active"] = check_disk_on(disk["name"])
+
+        except KeyError:
+            error_exit("KeyError in function hdd_devices")
 
     return hdd_devices_table
 
@@ -90,15 +104,17 @@ def main():
             continue
 
         else:
-            time.sleep(0.5)
+            time.sleep(2)
             process_hdparm = subprocess.run(
                 ["hdparm", "-y", disk["name"]],
                 capture_output=True,
                 text=True
             )
 
-            if process_hdparm.stderr != "":
-                raise RuntimeError(process_hdparm.stderr)
+            error_exit(process_hdparm.stderr)
+
+    print("Completed process")
+    sys.exit()
 
 
 if __name__ == "__main__":
