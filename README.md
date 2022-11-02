@@ -1,16 +1,29 @@
 # idle-hdd
 
+### ***What is it?***
+
+Small script designed to shutdown all unmounted hard disk drive installed.  
+Intended to be run automatically by the Linux sudo cron daemon.
+
+### ***Dependences (tested in)***
+
+- Python3 (v3.10.7)
+  - subprocess
+  - sys
+  - time
+  - json
+- hdparm (v9.60)
+- lsblk (2.38)
+
+------
+
 ### Suspende los Discos Duros ***desmontados*** e inactivos en *Linux*.
 
 Herramienta diseñada para ser ejecutado en Linux con el único objetivo de apagar
 los discos duros que se encuentran desmontados y, por tanto, inactivos generando 
-ruido innecesario y reduciendo la vida útil de los mismos.
-
-### Dependencias (probado en)
-
-- Python3 (v3.10.7)
-- hdparm (v9.60)
-- lsblk (2.38)
+ruido innecesario y reduciendo la vida útil de los mismos.  
+El script está destinado a ser ejecutado mediante cron daemon como sudo, 
+automatizando el proceso de apagar los discos cuando sea necesario.
 
 ### ¿Porqué se creó este script?
 
