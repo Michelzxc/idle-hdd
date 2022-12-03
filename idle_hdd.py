@@ -20,6 +20,10 @@ import json
 import time
 
 
+HDPARM_PATH = "/usr/sbin/hdparm"
+LSBLK_PATH = "/usr/bin/lsblk"
+
+
 def error_exit(stderr: str):
     """Print stderr and call SystemExit if stderr is not void string."""
 
@@ -35,7 +39,7 @@ def lsblk_table() -> list:
     model: str, rota: True | False
     """
     process_lsblk = subprocess.run(
-        ["lsblk", "-o", "NAME,TYPE,MOUNTPOINT,MODEL,ROTA", "-pJ"],
+        [LSBLK_PATH, "-o", "NAME,TYPE,MOUNTPOINT,MODEL,ROTA", "-pJ"],
         capture_output=True,
         text=True
     )
@@ -54,7 +58,7 @@ def check_disk_on(name: str) -> bool:
     """Check if the disk is active."""
 
     process_hdparm = subprocess.run(
-        ["hdparm", "-C", name],
+        [HDPARM_PATH, "-C", name],
         capture_output=True,
         text=True,
     )
@@ -106,7 +110,7 @@ def main():
         else:
             time.sleep(2)
             process_hdparm = subprocess.run(
-                ["hdparm", "-y", disk["name"]],
+                [HDPARM_PATH, "-y", disk["name"]],
                 capture_output=True,
                 text=True
             )
